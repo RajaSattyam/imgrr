@@ -8,6 +8,12 @@ const app = express();
 app.use('/', express.static(config.client_path));
 app.use(bodyParser.json());
 
+app.get('/ping', (request, response) => {
+  response.json({
+    pong: true,
+  });
+});
+
 app.post('/upload', (request, response) => {
   response.status(200).json({
     base_uri: `http://localhost:${config.image_service_port}`,

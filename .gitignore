@@ -1,6 +1,14 @@
 # Builds
 build
 
+# Images
+uploads
+originals
+
+# database
+data
+data/db
+
 # Logs
 logs
 *.log

@@ -1,4 +1,4 @@
-/* global window Image */
+/* global window Image FormData */
 import React, { Component } from 'react';
 import request from 'axios';
 
@@ -9,7 +9,7 @@ class Home extends Component {
     super(args);
     this.state = {
       uploadImage: null,
-      uploadImageId: null,
+      uploadImageFilename: null,
       error: '',
       images: [],
     };
@@ -24,13 +24,29 @@ class Home extends Component {
   validateUploadImage(event) {
     const files = event.target.files;
     const file = files && files[0];
-    if (file.type === 'image/png') {
+    if (file.type === 'image/png' || file.type === 'image/jpeg') {
       const img = new Image();
       const self = this;
       img.src = window.URL.createObjectURL(file);
       img.onload = function loadImage() {
         if (this.width === 1024 || this.height === 1024) {
-          // Upload Image to Image Service
+          const data = new FormData();
+          data.append('image', file);
+          request.create({
+            headers: {
+              'content-type': 'multipart/form-data',
+            },
+          }).post('http://localhost:1338/api/upload', data)
+            .then((response) => {
+              self.setState({
+                uploadImageFilename: response.data.filename,
+              });
+            })
+            .catch((error) => {
+              self.setState({
+                error: error.message || 'Something went wrong! Please try again',
+              });
+            });
         } else {
           self.setState({
             error: 'Image dimensions should be 1024 x 1024',
@@ -47,7 +63,7 @@ class Home extends Component {
   handleUpload(event) {
     event.preventDefault();
     const data = {
-      id: this.state.uploadImageId,
+      filename: this.state.uploadImageFilename,
     };
 
     request
@@ -62,6 +78,7 @@ class Home extends Component {
         <div className={styles.uploader}>
           <div>
             {this.state.error}
+            {this.state.uploadImageFilename}
           </div>
           <input
             type="file"
