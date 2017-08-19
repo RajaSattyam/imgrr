@@ -67,7 +67,7 @@ class Home extends Component {
     };
 
     request
-      .post('/upload', data)
+      .post('/api/upload', data)
       .then(response => console.log(response))
       .catch(error => console.log(error.message));
   }

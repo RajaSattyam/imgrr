@@ -10,6 +10,6 @@ class Images extends Component {
       <h1>Images Container</h1>
     );
   }
-};
+}
 
 export default Images;

@@ -5,13 +5,14 @@
   "author": "Abinav Seelan <abinav.n.seelan@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "server": "node server.js",
+    "server": "node server/server.js",
     "build": "webpack --progress"
   },
   "dependencies": {
     "axios": "^0.16.2",
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
+    "mongoose": "^4.11.7",
     "preact": "^8.2.1",
     "preact-compat": "^3.17.0",
     "react": "^15.6.1",
