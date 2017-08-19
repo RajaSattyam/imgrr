@@ -1,12 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const app = express();
-
 const config = require('../config');
+
+const app = express();
 
 app.use('/', express.static(config.client_path));
 app.use(bodyParser.json());
+
+app.post('/upload', (request, response) => {
+  response.status(200).json({
+    base_uri: `http://localhost:${config.image_service_port}`,
+    id: request.body.id,
+  });
+});
 
 app.get('*', (request, response) => {
   response.header('Content-type', 'text/html');
