@@ -6,4 +6,26 @@ module.exports = {
   image_service_url: 'http://localhost:1338',
   client_path: path.join(__dirname, '/web-server/client/build'),
   db: 'mongodb://localhost:27017/imgrr',
+  sizes: {
+    '1024x1024': {
+      width: 1024,
+      height: 1024,
+    },
+    '755x450': {
+      width: 755,
+      height: 450,
+    },
+    '365x450': {
+      width: 365,
+      height: 450,
+    },
+    '365x212': {
+      width: 365,
+      height: 212,
+    },
+    '380x380': {
+      width: 380,
+      height: 380,
+    }
+  }
 };

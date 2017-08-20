@@ -5,7 +5,7 @@
   "author": "Abinav Seelan <abinav.n.seelan@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "server": "node server/server.js",
+    "server": "nodemon server/server.js",
     "build": "webpack --progress"
   },
   "dependencies": {
