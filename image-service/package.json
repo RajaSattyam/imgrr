@@ -10,6 +10,7 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
+    "gm": "^1.23.0",
     "multer": "^1.3.0",
     "randomstring": "^1.1.5"
   },
