@@ -65,6 +65,34 @@ app.get('/api/gallery', (request, response) => {
     });
 });
 
+app.get('/api/gallery/:image_id', (request, response) => {
+  const { image_id: id } = request.params;
+
+  return new Promise((resolve, reject) => {
+    Image
+      .findOne({ id })
+      .exec((err, image) => {
+        if (err) {
+          reject(new Error(err));
+        }
+        if (!image) {
+          reject(new Error('Image does not exist'));
+        }
+
+        resolve(image);
+      });
+  })
+    .then((image) => {
+      response.status(200).json({
+        sizes: config.sizes,
+        image,
+      });
+    })
+    .catch((err) => {
+      response.status(500).json(err);
+    });
+});
+
 app.get('*', (request, response) => {
   response.header('Content-type', 'text/html');
   response.sendFile(path.resolve(__dirname, '..', 'client', 'build', 'index.html'));

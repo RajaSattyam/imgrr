@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import HomeContainer from './containers/Home';
-import ImagesContainer from './containers/Images';
+import GalleryContainer from './containers/Gallery';
 
 const APP_CONTAINER_NAME = 'app-container';
 
@@ -13,7 +13,7 @@ const App = () => (
   <Router>
     <div>
       <Route exact path="/" component={HomeContainer} />
-      <Route exact path="/:image_id" component={ImagesContainer} />
+      <Route exact path="/gallery/:image_id" component={GalleryContainer} />
     </div>
   </Router>
 );

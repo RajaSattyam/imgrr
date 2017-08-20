@@ -7,10 +7,6 @@ module.exports = {
   client_path: path.join(__dirname, '/web-server/client/build'),
   db: 'mongodb://localhost:27017/imgrr',
   sizes: {
-    '1024x1024': {
-      width: 1024,
-      height: 1024,
-    },
     '755x450': {
       width: 755,
       height: 450,
@@ -26,6 +22,10 @@ module.exports = {
     '380x380': {
       width: 380,
       height: 380,
-    }
+    },
+    '1024x1024': {
+      width: 1024,
+      height: 1024,
+    },
   }
 };
