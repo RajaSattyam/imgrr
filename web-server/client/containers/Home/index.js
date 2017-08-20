@@ -10,7 +10,6 @@ class Home extends Component {
     super(args);
     this.state = {
       uploadImage: null,
-      uploadImageId: null,
       error: '',
       images: [],
       gallerySize: null,
@@ -42,23 +41,9 @@ class Home extends Component {
       img.src = window.URL.createObjectURL(file);
       img.onload = function loadImage() {
         if (this.width === 1024 || this.height === 1024) {
-          const data = new FormData();
-          data.append('image', file);
-          request.create({
-            headers: {
-              'content-type': 'multipart/form-data',
-            },
-          }).post('http://localhost:1338/api/upload', data)
-            .then((response) => {
-              self.setState({
-                uploadImageId: response.data.id,
-              });
-            })
-            .catch((error) => {
-              self.setState({
-                error: error.message || 'Something went wrong! Please try again',
-              });
-            });
+          self.setState({
+            uploadImage: file,
+          });
         } else {
           self.setState({
             error: 'Image dimensions should be 1024 x 1024',
@@ -74,18 +59,32 @@ class Home extends Component {
 
   handleUpload(event) {
     event.preventDefault();
-    const data = {
-      id: this.state.uploadImageId,
-    };
+
+    const data = new FormData();
+    data.append('image', this.state.uploadImage);
 
     request
-      .post('/api/upload', data)
+      .create({
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .post('http://localhost:1338/api/upload', data)
+      .then((response) => {
+        return request.post('/api/upload', {
+          id: response.data.id,
+        });
+      })
       .then((response) => {
         this.setState({
           images: [response.data, ...this.state.images],
         });
       })
-      .catch(error => console.log(error.message));
+      .catch((error) => {
+        this.setState({
+          error: error.message || 'Something went wrong! Please try again',
+        });
+      });
   }
 
   render() {
@@ -105,7 +104,6 @@ class Home extends Component {
           <div className={styles.uploader}>
             <div>
               {this.state.error}
-              {this.state.uploadImageId}
             </div>
             <input
               type="file"
