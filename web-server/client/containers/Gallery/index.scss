@@ -1,9 +1,66 @@
-.gallery-container {
+.container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+}
+
+.back {
+  margin: 40px 0;
+  text-decoration: none;
+}
+
+
+.gallery-container {
+  width: 100%;
 
   img {
     margin: 20px;
+  }
+
+  a {
+    text-decoration-style: dotted;
+    color: #707676;
+  }
+
+  .original {
+    border-radius: 8px;
+    -webkit-box-shadow: 2px 6px 11px 0px rgba(184,184,184,1);
+    -moz-box-shadow: 2px 6px 11px 0px rgba(184,184,184,1);
+    box-shadow: 2px 6px 11px 0px rgba(184,184,184,1);
+    margin:  20px;
+    height: 200px;
+    width: 200px;
+  }
+
+  .cropping-toolbox {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    width: 100%;
+  }
+
+  .crop-option {
+    font-size: 1em;
+    cursor: pointer;
+    margin: 15px 30px;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+
+  .preview {
+    display: flex;
+    padding: 30px 0;
+    align-items: center;
+    flex-direction: column;
+
+
+    img {
+      max-height: 500px;
+      max-width: 500px;
+    }
   }
 }

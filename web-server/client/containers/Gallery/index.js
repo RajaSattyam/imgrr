@@ -10,8 +10,12 @@ class Gallery extends Component {
     this.state = {
       sizes: null,
       image: null,
+      selectedWidth: 1024,
+      selectedHeight: 1024,
       error: '',
     };
+
+    this.loadImage = this.loadImage.bind(this);
   }
   componentWillMount() {
     request
@@ -29,26 +33,69 @@ class Gallery extends Component {
       });
   }
 
+  loadImage(event) {
+    const size = event.target.getAttribute('name');
+    const width = size.split('x')[0];
+    const height = size.split('x')[1];
+
+    this.setState({
+      selectedHeight: height,
+      selectedWidth: width,
+    });
+  }
+
   render() {
     const { image, sizes } = this.state;
     const gallerySizes = sizes && Object.keys(sizes);
-    const images = gallerySizes && gallerySizes.map(size => (
-      <img
-        src={`${image.base_uri}/${sizes[size].width}/${sizes[size].height}/${image.id}`}
-        alt={size}
-        height={sizes[size].height}
-        width={sizes[size].width}
-      />
+    const sizeOptions = gallerySizes && gallerySizes.map(size => (
+      <span
+        className={styles['crop-option']}
+        name={size}
+        onClick={this.loadImage}
+        role="link"
+        tabIndex="-1"
+      >
+        {size}
+      </span>
     ));
     return (
-      <div>
-        <div>
-          <Link to="/">
-            Go back
-          </Link>
-        </div>
+      <div className={styles.container}>
+        <Link to="/" className={styles.back}>
+          Go back
+        </Link>
         <div className={styles['gallery-container']}>
-          {images}
+          <div className={styles['cropping-toolbox']}>
+            {
+              image
+                ? (
+                  <img
+                    className={styles.original}
+                    src={`${image.base_uri}/1024/1024/${image.id}`}
+                    alt={'1024x1024'}
+                  />
+                )
+                : (null)
+            }
+            {sizeOptions}
+          </div>
+          {
+            image
+              ? (
+                <div className={styles.preview}>
+                  <img
+                    src={`${image.base_uri}/${this.state.selectedWidth}/${this.state.selectedHeight}/${image.id}`}
+                    alt={`${this.state.selectedWidth}x${this.state.selectedHeight}`}
+                  />
+                  <a
+                    href={`${image.base_uri}/${this.state.selectedWidth}/${this.state.selectedHeight}/${image.id}`}
+                    target="_blank"
+                  >
+                    {'View Full Size'}
+                  </a>
+                </div>
+              )
+              : (null)
+          }
         </div>
       </div>
     );

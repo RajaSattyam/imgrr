@@ -9,6 +9,8 @@ html, body {
 .container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
   .uploader {
     margin-top: 50px;
@@ -31,6 +33,11 @@ html, body {
 
     padding: 10px 20px;
   }
+
+  button[disabled] {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
 }
 
 .image-container {
@@ -41,8 +48,23 @@ html, body {
   width: 90%;
 
   img {
+    border-radius: 8px;
+    -webkit-box-shadow: 2px 6px 11px 0px rgba(184,184,184,1);
+    -moz-box-shadow: 2px 6px 11px 0px rgba(184,184,184,1);
+    box-shadow: 2px 6px 11px 0px rgba(184,184,184,1);
     margin:  20px;
     height: 200px;
     width: 200px;
+    transform: scale(1, 1);
+    transition: all 0.2s ease-out;
+
+
+    &:hover, &:focus {
+      -webkit-box-shadow: 2px 17px 43px 0px rgba(184,184,184,0.75);
+      -moz-box-shadow: 2px 17px 43px 0px rgba(184,184,184,0.75);
+      box-shadow: 2px 17px 43px 0px rgba(184,184,184,0.75);
+      transform: scale(1.05, 1.05);
+      transition: all 0.2s ease-out;
+    }
   }
 }

@@ -13,6 +13,7 @@ class Home extends Component {
       error: '',
       images: [],
       gallerySize: null,
+      buttonDisabled: true,
     };
     this.handleUpload = this.handleUpload.bind(this);
     this.validateUploadImage = this.validateUploadImage.bind(this);
@@ -43,6 +44,7 @@ class Home extends Component {
         if (this.width === 1024 || this.height === 1024) {
           self.setState({
             uploadImage: file,
+            buttonDisabled: false,
           });
         } else {
           self.setState({
@@ -99,20 +101,25 @@ class Home extends Component {
       );
     });
     return (
-      <div>
-        <div className={styles.container}>
-          <div className={styles.uploader}>
-            <div>
-              {this.state.error}
-            </div>
-            <input
-              type="file"
-              placholder="Upload an image"
-              className={styles.input}
-              onChange={this.validateUploadImage}
-            />
-            <button className={styles['upload-btn']} onClick={this.handleUpload}>Upload</button>
+      <div className={styles.container}>
+        <div className={styles.uploader}>
+          <div>
+            {this.state.error}
           </div>
+          <input
+            type="file"
+            placholder="Upload an image"
+            className={styles.input}
+            accept="image/*"
+            onChange={this.validateUploadImage}
+          />
+          <button
+            className={styles['upload-btn']}
+            onClick={this.handleUpload}
+            disabled={this.state.buttonDisabled}
+          >
+            Upload
+          </button>
         </div>
         <div className={styles['image-container']}>
           {images}
