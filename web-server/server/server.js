@@ -17,24 +17,53 @@ app.get('/ping', (request, response) => {
   });
 });
 
-app.post('/api/upload', (request, response) => new Promise((resolve, reject) => {
-  Image
-    .create({
-      base_uri: config.image_service_url,
-      id: request.body.id,
-    }, (err, image) => {
-      if (err) {
-        reject(new Error(err));
-      }
+app.post('/api/upload', (request, response) => {
+  return new Promise((resolve, reject) => {
+    Image
+      .create({
+        base_uri: config.image_service_url,
+        id: request.body.id,
+      }, (err, image) => {
+        if (err) {
+          reject(new Error(err));
+        }
 
-      resolve(image);
+        resolve(image);
+      });
+  })
+    .then((image) => {
+      response.status(200).json({
+        base_uri: image.base_uri,
+        id: image.id,
+      });
+    })
+    .catch((err) => {
+      response.status(500).json(err);
     });
-}).then((image) => {
-  response.status(200).json({
-    base_uri: image.base_uri,
-    id: image.id,
-  });
-}));
+});
+
+app.get('/api/gallery', (request, response) => {
+  return new Promise((resolve, reject) => {
+    Image
+      .find({})
+      .exec((err, images) => {
+        if (err) {
+          reject(new Error(err));
+        }
+
+        resolve(images);
+      });
+  })
+    .then((images) => {
+      response.status(200).json({
+        size: config.sizes['380x380'],
+        images: images.map(image => ({ base_uri: image.base_uri, id: image.id })),
+      });
+    })
+    .catch((err) => {
+      response.status(500).json(err);
+    });
+});
 
 app.get('*', (request, response) => {
   response.header('Content-type', 'text/html');

@@ -1,6 +1,7 @@
 /* global window Image FormData */
 import React, { Component } from 'react';
 import request from 'axios';
+import { Link } from 'react-router-dom';
 
 import styles from './index.scss';
 
@@ -12,13 +13,24 @@ class Home extends Component {
       uploadImageId: null,
       error: '',
       images: [],
+      gallerySize: null,
     };
     this.handleUpload = this.handleUpload.bind(this);
     this.validateUploadImage = this.validateUploadImage.bind(this);
   }
 
   componentWillMount() {
-
+    request
+      .get('/api/gallery')
+      .then((response) => {
+        this.setState({
+          gallerySize: response.data.size,
+          images: response.data.images,
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   validateUploadImage(event) {
@@ -68,25 +80,44 @@ class Home extends Component {
 
     request
       .post('/api/upload', data)
-      .then(response => console.log(response))
+      .then((response) => {
+        this.setState({
+          images: [response.data, ...this.state.images],
+        });
+      })
       .catch(error => console.log(error.message));
   }
 
   render() {
-    return (
-      <div className={styles.container}>
-        <div className={styles.uploader}>
-          <div>
-            {this.state.error}
-            {this.state.uploadImageId}
-          </div>
-          <input
-            type="file"
-            placholder="Upload an image"
-            className={styles.input}
-            onChange={this.validateUploadImage}
+    const images = this.state.images.map((image) => {
+      return (
+        <Link to={`/gallery/${image.id}`}>
+          <img
+            src={`${image.base_uri}/${this.state.gallerySize.width}/${this.state.gallerySize.height}/${image.id}`}
+            alt={`${'id'}`}
           />
-          <button className={styles['upload-btn']} onClick={this.handleUpload}>Upload</button>
+        </Link>
+      );
+    });
+    return (
+      <div>
+        <div className={styles.container}>
+          <div className={styles.uploader}>
+            <div>
+              {this.state.error}
+              {this.state.uploadImageId}
+            </div>
+            <input
+              type="file"
+              placholder="Upload an image"
+              className={styles.input}
+              onChange={this.validateUploadImage}
+            />
+            <button className={styles['upload-btn']} onClick={this.handleUpload}>Upload</button>
+          </div>
+        </div>
+        <div className={styles['image-container']}>
+          {images}
         </div>
       </div>
     );
