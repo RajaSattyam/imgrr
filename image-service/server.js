@@ -4,8 +4,8 @@ const multer = require('multer');
 const randomString = require('randomstring');
 const fs = require('fs');
 const path = require('path');
-const gm = require('gm');
 const config = require('../config');
+const helpers = require('./helpers');
 
 const app = express();
 const storage = multer.diskStorage({
@@ -17,20 +17,6 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-
-function resizeAndSave(width, height, folder, file, cb) {
-  gm(`./originals/${file}`)
-    .gravity('Center')
-    .quality(50)
-    .crop(width, height)
-    .write(`./uploads/${folder}/${width}x${height}.png`, (err) => {
-      if (err) {
-        console.log(err);
-      } else if (typeof cb === 'function') {
-        cb();
-      }
-    });
-}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -48,6 +34,9 @@ app.get('/ping', (request, response) => {
 
 app.get('/:width/:height/:id', (request, response) => {
   const { width, height, id: folderName } = request.params;
+  const cb = () => {
+    response.status(200).sendFile(path.resolve(__dirname, 'uploads', folderName, `${width}x${height}.png`));
+  };
 
   if (!folderName || !fs.existsSync(`./uploads/${folderName}`)) {
     console.log('folder not available');
@@ -57,12 +46,10 @@ app.get('/:width/:height/:id', (request, response) => {
 
   if (!fs.existsSync(`./uploads/${folderName}/${width}x${height}.png`)) {
     console.log('file not available. Resizing!');
-    resizeAndSave(width, height, folderName, `${folderName}.png`, () => {
-      response.status(200).sendFile(path.resolve(__dirname, 'uploads', folderName, `${width}x${height}.png`));
-    });
+    helpers.resizeAndSave(width, height, folderName, `${folderName}.png`, cb);
   } else {
     console.log('File available. Sending!');
-    response.status(200).sendFile(path.resolve(__dirname, 'uploads', folderName, `${width}x${height}.png`));
+    cb();
   }
 
   return null;
@@ -82,7 +69,12 @@ app.post('/api/upload', upload.single('image'), (request, response) => {
   }
 
   sizes.forEach((size) => {
-    resizeAndSave(config.sizes[size].width, config.sizes[size].height, folderName, fileName);
+    helpers.resizeAndSave(
+      config.sizes[size].width,
+      config.sizes[size].height,
+      folderName,
+      fileName,
+    );
   });
 });
 

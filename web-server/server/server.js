@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 const config = require('../../config');
-const Image = require('./ImageModel').Image;
+const helpers = require('./helpers');
 
 const app = express();
 
@@ -18,19 +18,7 @@ app.get('/ping', (request, response) => {
 });
 
 app.post('/api/upload', (request, response) => {
-  return new Promise((resolve, reject) => {
-    Image
-      .create({
-        base_uri: config.image_service_url,
-        id: request.body.id,
-      }, (err, image) => {
-        if (err) {
-          reject(new Error(err));
-        }
-
-        resolve(image);
-      });
-  })
+  helpers.saveImage(config.image_service_url, request.body.id)
     .then((image) => {
       response.status(200).json({
         base_uri: image.base_uri,
@@ -43,17 +31,7 @@ app.post('/api/upload', (request, response) => {
 });
 
 app.get('/api/gallery', (request, response) => {
-  return new Promise((resolve, reject) => {
-    Image
-      .find({})
-      .exec((err, images) => {
-        if (err) {
-          reject(new Error(err));
-        }
-
-        resolve(images);
-      });
-  })
+  helpers.getAllImages()
     .then((images) => {
       response.status(200).json({
         size: config.sizes['380x380'],
@@ -68,20 +46,7 @@ app.get('/api/gallery', (request, response) => {
 app.get('/api/gallery/:image_id', (request, response) => {
   const { image_id: id } = request.params;
 
-  return new Promise((resolve, reject) => {
-    Image
-      .findOne({ id })
-      .exec((err, image) => {
-        if (err) {
-          reject(new Error(err));
-        }
-        if (!image) {
-          reject(new Error('Image does not exist'));
-        }
-
-        resolve(image);
-      });
-  })
+  helpers.getImageById(id)
     .then((image) => {
       response.status(200).json({
         sizes: config.sizes,
