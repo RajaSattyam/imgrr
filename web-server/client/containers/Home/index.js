@@ -9,7 +9,7 @@ class Home extends Component {
     super(args);
     this.state = {
       uploadImage: null,
-      uploadImageFilename: null,
+      uploadImageId: null,
       error: '',
       images: [],
     };
@@ -39,7 +39,7 @@ class Home extends Component {
           }).post('http://localhost:1338/api/upload', data)
             .then((response) => {
               self.setState({
-                uploadImageFilename: response.data.filename,
+                uploadImageId: response.data.id,
               });
             })
             .catch((error) => {
@@ -63,7 +63,7 @@ class Home extends Component {
   handleUpload(event) {
     event.preventDefault();
     const data = {
-      filename: this.state.uploadImageFilename,
+      id: this.state.uploadImageId,
     };
 
     request
@@ -78,7 +78,7 @@ class Home extends Component {
         <div className={styles.uploader}>
           <div>
             {this.state.error}
-            {this.state.uploadImageFilename}
+            {this.state.uploadImageId}
           </div>
           <input
             type="file"

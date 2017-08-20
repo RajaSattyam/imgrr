@@ -21,7 +21,7 @@ app.post('/api/upload', (request, response) => new Promise((resolve, reject) => 
   Image
     .create({
       base_uri: config.image_service_url,
-      filename: request.body.filename,
+      id: request.body.id,
     }, (err, image) => {
       if (err) {
         reject(new Error(err));
@@ -32,7 +32,7 @@ app.post('/api/upload', (request, response) => new Promise((resolve, reject) => 
 }).then((image) => {
   response.status(200).json({
     base_uri: image.base_uri,
-    filename: image.filename,
+    id: image.id,
   });
 }));
 

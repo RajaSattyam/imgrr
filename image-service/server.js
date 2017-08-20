@@ -47,7 +47,7 @@ app.post('/api/upload', upload.single('image'), (request, response) => {
   const folderName = fileName.split('.')[0];
 
   response.status(200).json({
-    filename: request.file.filename,
+    id: folderName,
   });
 
   if (!fs.existsSync(`./uploads/${folderName}`)) {
