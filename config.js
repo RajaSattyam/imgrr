@@ -5,6 +5,10 @@ module.exports = {
   image_service_port: 1338,
   image_service_url: 'http://localhost:1338',
   client_path: path.join(__dirname, '/web-server/client/build'),
+  aws: {
+    s3_url: '<aws url>',
+    bucket: '<bucket name>,
+  },
   db: 'mongodb://localhost:27017/imgrr',
   sizes: {
     '755x450': {

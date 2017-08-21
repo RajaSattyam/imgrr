@@ -4,6 +4,7 @@ build
 # Images
 uploads
 originals
+tmp
 
 # database
 data

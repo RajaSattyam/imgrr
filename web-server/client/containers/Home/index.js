@@ -94,7 +94,7 @@ class Home extends Component {
       return (
         <Link to={`/gallery/${image.id}`}>
           <img
-            src={`${image.base_uri}/${this.state.gallerySize.width}/${this.state.gallerySize.height}/${image.id}`}
+            src={`${image.base_uri}/original/${image.id}`}
             alt={`${'id'}`}
           />
         </Link>

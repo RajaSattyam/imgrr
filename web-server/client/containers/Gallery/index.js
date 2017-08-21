@@ -21,9 +21,10 @@ class Gallery extends Component {
     request
       .get(`/api/gallery/${this.props.match.params.image_id}`)
       .then((response) => {
+        const { image, sizes } = response.data;
         this.setState({
-          sizes: response.data.sizes,
-          image: response.data.image,
+          sizes,
+          image,
         });
       })
       .catch((error) => {
@@ -35,17 +36,31 @@ class Gallery extends Component {
 
   loadImage(event) {
     const size = event.target.getAttribute('name');
+    const { image } = this.state;
     const width = size.split('x')[0];
     const height = size.split('x')[1];
 
-    this.setState({
-      selectedHeight: height,
-      selectedWidth: width,
-    });
+    request
+      .get(`${image.base_uri}/${width}/${height}/${image.id}`)
+      .then((response) => {
+        this.setState({
+          image: {
+            ...this.state.image,
+            url: response.data.url,
+          },
+          selectedHeight: height,
+          selectedWidth: width,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: 'Something went wrong while fetching the image',
+        });
+      });
   }
 
   render() {
-    const { image, sizes } = this.state;
+    const { image, sizes, displayImage } = this.state;
     const gallerySizes = sizes && Object.keys(sizes);
     const sizeOptions = gallerySizes && gallerySizes.map(size => (
       <span
@@ -70,7 +85,7 @@ class Gallery extends Component {
                 ? (
                   <img
                     className={styles.original}
-                    src={`${image.base_uri}/1024/1024/${image.id}`}
+                    src={`${image.base_uri}/original/${image.id}`}
                     alt={'1024x1024'}
                   />
                 )
@@ -79,15 +94,15 @@ class Gallery extends Component {
             {sizeOptions}
           </div>
           {
-            image
+            image && image.url
               ? (
                 <div className={styles.preview}>
                   <img
-                    src={`${image.base_uri}/${this.state.selectedWidth}/${this.state.selectedHeight}/${image.id}`}
+                    src={`${image.url}`}
                     alt={`${this.state.selectedWidth}x${this.state.selectedHeight}`}
                   />
                   <a
-                    href={`${image.base_uri}/${this.state.selectedWidth}/${this.state.selectedHeight}/${image.id}`}
+                    href={`${image.url}`}
                     target="_blank"
                   >
                     {'View Full Size'}
